@@ -1,5 +1,14 @@
 FROM quay.io/konflux-ci/yq:latest AS yq
-FROM registry.access.redhat.com/ubi9:9.8-1781496985 AS builder
+FROM registry.access.redhat.com/ubi9:9.7-1778044007 AS builder
+
+ARG GOCILINT_VERSION="2.12.2"
+ARG GOCILINT_SHA256SUM="8df580d2670fed8fa984aac0507099af8df275e665215f5c7a2ae3943893a553"
+ARG GOCILINT_LOCATION=https://github.com/golangci/golangci-lint/releases/download/v${GOCILINT_VERSION}/golangci-lint-${GOCILINT_VERSION}-linux-amd64.tar.gz
+
+RUN curl -L -o golangci-lint.tar.gz ${GOCILINT_LOCATION} && \
+    echo ${GOCILINT_SHA256SUM} golangci-lint.tar.gz | sha256sum -c && \
+    tar xzf golangci-lint.tar.gz golangci-lint-${GOCILINT_VERSION}-linux-amd64/golangci-lint && \
+    mv golangci-lint-${GOCILINT_VERSION}-linux-amd64/golangci-lint /usr/local/bin
 
 ARG GH_VERSION="2.58.0"
 ARG GH_SHA256SUM="84feae3d143bc360ea1004b474f124c8cfd75363a5e197d3ce63fe23d9f3a2ea"
